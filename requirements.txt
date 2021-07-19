@@ -1,0 +1,10 @@
+nums
+modin
+numpy
+pandas
+ray
+s3fs
+jupyter
+jupyterlab
+matplotlib
+tqdm

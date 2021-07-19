@@ -1,0 +1,5 @@
+#Ignore large files
+data/
+figures/
+
+.ipynb_checkpoints/
