@@ -7,6 +7,11 @@ s3fs
 jupyter
 jupyterlab
 matplotlib
+plotly
+plotly-express
+chart-studio
 tqdm
 jedi
 greykite
+geopandas
+geoplot
