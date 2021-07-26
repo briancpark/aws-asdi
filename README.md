@@ -3,7 +3,7 @@
 ## Getting Started
 (*Optional*) Create a conda environment:
 ```sh
-conda create -n myenv python=3.7
+conda create -n aws-asdi python=3.7
 ```
 
 Install dependencies:
