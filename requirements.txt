@@ -1,4 +1,4 @@
--e git+https://github.com/nums-project/nums.git@master#egg=nums
+git+https://github.com/nums-project/nums.git@master#egg=nums
 modin==0.10.0
 numpy==1.19.5
 pandas==1.2.4
