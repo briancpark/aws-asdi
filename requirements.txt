@@ -10,5 +10,5 @@ matplotlib==3.4.2
 scikit-learn==0.24.2
 tqdm==4.61.2
 jedi==0.18.0
-greykite==0.2.0
+plotly==5.1.0
 xgboost==1.4.2
