@@ -1,6 +1,6 @@
 #Ignore large files
 data/
 figures/
+*.html
 
 .ipynb_checkpoints/
-*.yaml
