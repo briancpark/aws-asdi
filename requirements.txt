@@ -12,3 +12,4 @@ tqdm==4.61.2
 jedi==0.18.0
 plotly==5.1.0
 xgboost==1.4.2
+aioredis < 2
