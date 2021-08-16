@@ -60,7 +60,7 @@ available_node_types:
             ImageId: ami-0bb0f156481e1c7f9 # Deep Learning AMI (Ubuntu) Version 45
             # You can provision additional disk space with a conf as follows
             BlockDeviceMappings:
-                - DeviceName: "/dev/xvda"
+                - DeviceName: /dev/xvda
                   Ebs:
                       VolumeSize: 500
             # Additional options in the boto docs.
@@ -86,7 +86,7 @@ available_node_types:
             ImageId: ami-0bb0f156481e1c7f9 # Deep Learning AMI (Ubuntu) Version 45
             # Run workers on spot by default. Comment this out to use on-demand.
             BlockDeviceMappings:
-                - DeviceName: "/dev/xvda"
+                - DeviceName: /dev/xvda
                   Ebs:
                       VolumeSize: 500
             #InstanceMarketOptions:
@@ -140,7 +140,6 @@ initialization_commands:
     - mkdir /home/ec2-user/aws-asdi/data -p
     - aws s3 cp --recursive s3://noaa-ghcn-pds/csv/ --no-sign-request /home/ec2-user/aws-asdi/data
     - conda deactivate;
-        conda env remove --name aws-asdi -y;
         conda create -n aws-asdi python=3.7 -y;
     - echo "conda activate aws-asdi" >> /home/ec2-user/.bashrc
 
@@ -167,13 +166,13 @@ worker_setup_commands: []
 head_start_ray_commands:
     - ray stop
     # - ulimit -n 65536; ray start --head --port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml --object-store-memory=1000000000
-    - ulimit -n 65536; ray start --head --num-cpus=32 --port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml
+    - ulimit -n 65536; ray start --head --port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml --object-store-memory=1000000000
 
 # Command to start ray on worker nodes. You don't need to change this.
 worker_start_ray_commands:
     - ray stop
     # - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076 --object-store-memory=1000000000
-    - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --num-cpus=32 --object-manager-port=8076
+    - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076 --object-store-memory=1000000000
 
 head_node: {}
 worker_nodes: {}
