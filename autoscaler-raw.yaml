@@ -21,14 +21,14 @@ provider:
     # Availability zone(s), comma-separated, that nodes may be launched in.
     # Nodes are currently spread between zones by a round-robin approach,
     # however this implementation detail should not be relied upon.
-    availability_zone: us-east-1
+    availability_zone: us-east-1a,us-east-1b
     # Whether to allow node reuse. If set to False, nodes will be terminated
     # instead of stopped.
     #cache_stopped_nodes: False # If not present, the default is True.
 
 # How Ray will authenticate with newly launched nodes.
 auth:
-    ssh_user: ubuntu
+    ssh_user: ec2-user
 # By default Ray creates a new private keypair, but you can also use your own.
 # If you do so, make sure to also set "KeyName" in the head and worker node
 # configurations below.
@@ -60,9 +60,9 @@ available_node_types:
             ImageId: ami-0bb0f156481e1c7f9 # Deep Learning AMI (Ubuntu) Version 45
             # You can provision additional disk space with a conf as follows
             BlockDeviceMappings:
-                - DeviceName: /dev/sda1
+                - DeviceName: "/dev/xvda"
                   Ebs:
-                      VolumeSize: 100
+                      VolumeSize: 500
             # Additional options in the boto docs.
     ray.worker.default:
         # The minimum number of worker nodes of this type to launch.
@@ -86,9 +86,9 @@ available_node_types:
             ImageId: ami-0bb0f156481e1c7f9 # Deep Learning AMI (Ubuntu) Version 45
             # Run workers on spot by default. Comment this out to use on-demand.
             BlockDeviceMappings:
-                - DeviceName: /dev/sda1
+                - DeviceName: "/dev/xvda"
                   Ebs:
-                      VolumeSize: 100
+                      VolumeSize: 500
             #InstanceMarketOptions:
                 #MarketType: spot
                 # Additional options can be found in the boto docs, e.g.
@@ -102,7 +102,7 @@ head_node_type: ray.head.default
 # Files or directories to copy to the head and worker nodes. The format is a
 # dictionary from REMOTE_PATH: LOCAL_PATH, e.g.
 file_mounts: {
-    "/home/ubuntu/briancpark/aws-asdi": "/Users/brianpark/nums/aws-asdi",
+    "/home/ec2-user/aws-asdi": "/Users/brianpark/nums/aws-asdi",
 }
 
 # Files or directories to copy from the head node to the worker nodes. The format is a
@@ -130,20 +130,24 @@ rsync_filter:
 # enabled, these commands will run outside the container and before docker
 # is setup.
 initialization_commands:
-    - echo "export PATH=$PATH:/home/ubuntu/.local/bin" >> /home/ubuntu/.bashrc
-    - source /home/ubuntu/.bashrc
+    - echo "export PATH=$PATH:/home/ec2-user/.local/bin" >> /home/ec2-user/.bashrc
+    - source /home/ec2-user/.bashrc
     - /usr/bin/python3 -m pip install --upgrade pip
     - pip3 install -U protobuf
     - pip3 install psutil
+    - mkdir /home/ec2-user/aws-asdi/ray_temp -p
+    - mkdir /home/ec2-user/aws-asdi/ray_plasma -p
+    - mkdir /home/ec2-user/aws-asdi/data -p
+    - aws s3 cp --recursive s3://noaa-ghcn-pds/csv/ --no-sign-request /home/ec2-user/aws-asdi/data
     - conda deactivate;
         conda env remove --name aws-asdi -y;
-        conda create --name nums python=3.7 -y;
-    - echo "conda activate aws-asdi" >> /home/ubuntu/.bashrc
+        conda create -n aws-asdi python=3.7 -y;
+    - echo "conda activate aws-asdi" >> /home/ec2-user/.bashrc
 
 # List of shell commands to run to set up nodes.
 setup_commands:
     - conda activate aws-asdi;
-      pip install -r /home/ubuntu/briancpark/aws-asdi/requirements.txt;
+      pip install -r /home/ec2-user/aws-asdi/requirements.txt;
 
     # Note: if you're developing Ray, you probably want to create a Docker image that
     # has your Ray repo pre-cloned. Then, you can replace the pip installs
@@ -163,13 +167,13 @@ worker_setup_commands: []
 head_start_ray_commands:
     - ray stop
     # - ulimit -n 65536; ray start --head --port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml --object-store-memory=1000000000
-    - ulimit -n 65536; ray start --head --port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml
+    - ulimit -n 65536; ray start --head --num-cpus=32 --port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml
 
 # Command to start ray on worker nodes. You don't need to change this.
 worker_start_ray_commands:
     - ray stop
     # - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076 --object-store-memory=1000000000
-    - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076
+    - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --num-cpus=32 --object-manager-port=8076
 
 head_node: {}
 worker_nodes: {}

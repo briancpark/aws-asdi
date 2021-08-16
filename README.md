@@ -33,9 +33,9 @@ Make sure you have AWS credentials and keys stored and setup correctly, and we c
 ray up autoscaler-raw.yaml
 ```
 
-*Additionally, make sure the directory paths to your local machine are configured correctly on lines 105 and 146.*
+*Additionally, make sure the directory paths to your local machine are configured correctly on lines 105*
 
-The autoscaler script is configured with 1 head node, 4 worker nodes on us-east-1. It is important to make sure the worker nodes have initialized and started properly, otherwise the cluster configuration may fail to recognize worker nodes. To make sure a Ray cluster is started properly, check it by running this command from our local machine (There should be 5 nodes):
+The autoscaler script is configured with 1 head node, 4 worker nodes on us-east-1. It is important to make sure the worker nodes have initialized and started properly, otherwise the cluster configuration may fail to recognize worker nodes. To make sure a Ray cluster has started properly, check it by running this command from our local machine and view [localhost:8265](localhost:8265)(There should be 5 nodes):
 ```sh
 ray dashboard autoscaler-raw.yaml
 ```
