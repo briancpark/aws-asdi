@@ -39,6 +39,11 @@ The autoscaler script is configured with 1 head node, 4 worker nodes on us-east-
 ```sh
 ray dashboard autoscaler-raw.yaml
 ```
+or check it through:
+```sh
+ray attach autoscaler-raw.yaml
+ray status #once connected to remote EC2 instance
+```
 
 To run and execute the notebook, port forward the Jupyter notebook to connect it to your local machine's browser:
 ```sh
