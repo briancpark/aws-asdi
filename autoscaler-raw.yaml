@@ -138,6 +138,9 @@ initialization_commands:
     - mkdir /home/ec2-user/aws-asdi/ray_temp -p
     - mkdir /home/ec2-user/aws-asdi/ray_plasma -p
     - mkdir /home/ec2-user/aws-asdi/data -p
+    - sudo sed -i 's/8192/65536/g' /etc/security/limits.d/efa.conf
+    - echo '*               hard    nofile      65536' | sudo tee -a /etc/security/limits.conf
+    - echo '*               soft    nofile      65536' | sudo tee -a /etc/security/limits.conf
     - aws s3 cp --recursive s3://noaa-ghcn-pds/csv/ --no-sign-request /home/ec2-user/aws-asdi/data
     - conda deactivate;
         conda create -n aws-asdi python=3.7 -y;
