@@ -1,4 +1,4 @@
-git+https://github.com/briancpark/nums.git@aws-asdi#egg=nums
+nums=0.2.3
 modin==0.10.2
 numpy==1.19.5
 pandas==1.3.2
